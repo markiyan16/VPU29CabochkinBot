@@ -2,27 +2,47 @@ import os
 import logging
 
 from dotenv import load_dotenv
-from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 load_dotenv()
 
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+TELEGRAM_TOKEN_BOT = os.getenv('TELEGRAM_TOKEN_BOT')
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    keyboard = [
+        [KeyboardButton('Hello'), KeyboardButton('Author')],
+        [KeyboardButton('Bye')],
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard)
+
+    await update.message.reply_text(
+        f'Привіт {update.effective_user.first_name}',
+        reply_markup=reply_markup)
 
 
-if __name__ == '__main__':
-    application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(f'Hello {update.effective_user.first_name}')
 
-    start_handler = CommandHandler('start', start)
-    application.add_handler(start_handler)
 
-    application.run_polling()
+async def author(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Мене робив Oleh Yuzva")
+
+
+async def bye(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(f'Прощавай {update.effective_user.first_name}!')
+
+
+app = ApplicationBuilder().token(TELEGRAM_TOKEN_BOT).build()
+
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("hello", hello))
+app.add_handler(CommandHandler("author", author))
+app.add_handler(CommandHandler("bye", bye))
+
+app.run_polling()
