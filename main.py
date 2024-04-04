@@ -19,7 +19,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         [KeyboardButton('/hello'), KeyboardButton('/author')],
         [KeyboardButton('/bye')],
     ]
-    reply_markup = ReplyKeyboardMarkup(keyboard)
+    reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
     await update.message.reply_text(
         f'Привіт {update.effective_user.first_name}',
