@@ -31,7 +31,7 @@ async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def author(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="Мене робив Oleh Yuzva")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Мене робив Markyian Patsai")
 
 
 async def bye(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
