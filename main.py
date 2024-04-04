@@ -3,7 +3,7 @@ import logging
 
 from dotenv import load_dotenv
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, filters, MessageHandler
 
 load_dotenv()
 
@@ -17,7 +17,7 @@ logging.basicConfig(
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     keyboard = [
         [KeyboardButton('/hello'), KeyboardButton('/author')],
-        [KeyboardButton('/bye')],
+        [KeyboardButton('/bye'), KeyboardButton('Share location', request_location=True)],
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
@@ -38,11 +38,21 @@ async def bye(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(f'Прощавай {update.effective_user.first_name}!')
 
 
+async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    lat = update.message.location.latitude
+    lon = update.message.location.longitude
+
+    await update.message.reply_text(f'lat = {lat}, lon = {lon}')
+
+
 app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("hello", hello))
 app.add_handler(CommandHandler("author", author))
 app.add_handler(CommandHandler("bye", bye))
+
+location_handler = (MessageHandler(filters.LOCATION, location))
+app.add_handler(location_handler)
 
 app.run_polling()
