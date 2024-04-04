@@ -16,8 +16,8 @@ logging.basicConfig(
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     keyboard = [
-        [KeyboardButton('Hello'), KeyboardButton('Author')],
-        [KeyboardButton('Bye')],
+        [KeyboardButton('/hello'), KeyboardButton('/author')],
+        [KeyboardButton('/bye')],
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard)
 
@@ -27,7 +27,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(f'Hello {update.effective_user.first_name}')
+    await update.message.reply_text(f'Привіт {update.effective_user.first_name}!')
 
 
 async def author(update: Update, context: ContextTypes.DEFAULT_TYPE):
